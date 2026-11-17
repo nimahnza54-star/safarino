@@ -1,7 +1,9 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/AppImage";
 import { Vazirmatn } from "next/font/google";
+import MainHeader from "@/components/MainHeader";
+import { SearchBox } from "@/components/SearchBox";
 import { useState, useEffect, useCallback, useRef } from "react";
 
 const vazirmatn = Vazirmatn({
@@ -100,7 +102,7 @@ type FeatureCardProps = {
 function FeatureCard({ imgSrc, alt, title, description }: FeatureCardProps) {
   return (
     <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow flex flex-col text-center">
-      <div className="h-44 overflow-hidden">
+      <div className="relative h-44 overflow-hidden">
         <Image
           src={imgSrc}
           alt={alt}
@@ -184,7 +186,7 @@ type BlogCardProps = {
 function BlogCard({ imgSrc, alt, title, excerpt, author, date }: BlogCardProps) {
   return (
     <article className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition">
-      <div className="h-44 overflow-hidden">
+      <div className="relative h-44 overflow-hidden">
         <Image
           src={imgSrc}
           alt={alt}
@@ -224,123 +226,24 @@ function TopNotificationBar() {
   if (!visible) return null;
 
   return (
-    <div className="bg-[#fff9db] border-b border-[#ffe066] text-[#665000] py-2 px-4 text-xs font-medium">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <div className="flex items-center space-x-2 space-x-reverse">
-          <i className="fa-solid fa-circle-exclamation text-amber-600 text-sm"></i>
-          <span>
-            اطلاعیه مهم: پروازها و اسکان مناطق تحت نظارت با تخفیف ویژه نوروز ۱۴۰۵ ارائه می&zwnj;شود. برای اطلاعات بیشتر با پشتیبانی در تماس باشید.
-          </span>
-        </div>
-        <button
-          onClick={() => setVisible(false)}
-          className="text-gray-500 hover:text-gray-800 text-sm"
-        >
-          <i className="fa-solid fa-xmark"></i>
-        </button>
+   <div className="bg-amber-100 text-amber-900 border-b border-amber-200 text-xs py-2 px-4 flex items-center justify-between text-center relative z-50">
+      <div className="max-w-7xl mx-auto flex items-center gap-2 font-medium">
+        <i className="fa-solid fa-bullhorn text-amber-600"></i>
+        <span>
+          اطلاعیه مهم: پروازها و اسکان مناطق تحت نظارت با تخفیف ویژه نوروز ۱۴۰۵ ارائه می&zwnj;شود. برای اطلاعات بیشتر با پشتیبانی در تماس باشید.
+        </span>
       </div>
+      <button
+        onClick={() => setVisible(false)}
+        className="text-amber-700 hover:text-amber-950 px-2 font-bold text-sm"
+        type="button"
+      >
+        ✕
+      </button>
     </div>
   );
 }
 
-function MainHeader() {
-  const [moreOpen, setMoreOpen] = useState(false);
-
-  return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Right: Logo & Primary Navigation */}
-          <div className="flex items-center space-x-6 space-x-reverse">
-            <a href="#" className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-[#e21b5b] flex items-center justify-center text-white text-xl font-bold shadow-md shadow-[#e21b5b]/20">
-                <i className="fa-solid fa-paper-plane"></i>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-2xl font-black text-[#e21b5b] tracking-tight">
-                  سفرینو
-                </span>
-                <span className="text-[10px] text-gray-400 font-normal -mt-1">
-                  سفری به دنیای نو
-                </span>
-              </div>
-            </a>
-            <nav className="hidden lg:flex items-center space-x-6 space-x-reverse font-medium text-gray-700 text-sm">
-              <a
-                href="#"
-                className="text-[#e21b5b] font-semibold border-b-2 border-[#e21b5b] pb-1"
-              >
-                رزرو هتل
-              </a>
-              <a href="#" className="hover:text-[#e21b5b] transition-colors">
-                ویلا و اقامتگاه
-              </a>
-              <div className="relative group">
-                <button
-                  onClick={() => setMoreOpen((prev) => !prev)}
-                  className="flex items-center gap-1 hover:text-[#e21b5b] py-2 transition-colors"
-                >
-                  <span>بیشتر</span>
-                  <i
-                    className={`fa-solid fa-chevron-down text-xs text-gray-400 group-hover:rotate-180 transition-transform ${
-                      moreOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-                <div
-                  className={`absolute right-0 top-full ${
-                    moreOpen ? "block" : "hidden"
-                  } bg-white shadow-xl border border-gray-100 rounded-xl p-3 w-48 text-right text-xs z-50`}
-                >
-                  <a href="#" className="block px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700">
-                    بیمه مسافرتی
-                  </a>
-                  <a href="#" className="block px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700">
-                    استخدام سفرینو
-                  </a>
-                  <a href="#" className="block px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700">
-                    درباره ما
-                  </a>
-                </div>
-              </div>
-              <a href="#" className="hover:text-[#e21b5b] transition-colors">
-                میزبان شوید
-              </a>
-            </nav>
-          </div>
-          {/* Left: Quick Actions, Support & User Account */}
-          <div className="flex items-center space-x-4 space-x-reverse text-sm">
-            <a
-              href="#"
-              className="hidden sm:flex items-center gap-2 text-gray-600 hover:text-[#e21b5b] px-3 py-2 rounded-lg border border-gray-200 transition-all hover:border-[#fad1dd]"
-            >
-              <i className="fa-solid fa-headset text-[#e21b5b]"></i>
-              <span className="text-xs font-medium">مرکز پشتیبانی آنلاین</span>
-            </a>
-            <a
-              href="#"
-              className="hidden md:flex items-center gap-2 text-gray-600 hover:text-gray-900 px-2 py-2"
-            >
-              <i className="fa-solid fa-suitcase-rolling text-gray-400"></i>
-              <span className="text-xs font-medium">سفرهای من</span>
-            </a>
-            <div className="relative">
-              <button
-                className="flex items-center gap-2 bg-white border border-gray-300 hover:border-[#e21b5b] text-gray-700 px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition"
-              >
-                <i className="fa-regular fa-user text-sm"></i>
-                <span>ورود یا ثبت‌نام</span>
-              </button>
-            </div>
-            <button className="text-gray-400 hover:text-gray-600 p-2" title="تنظیمات">
-              <i className="fa-solid fa-globe text-base"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
-}
 
 function CategoryTab({
   icon,
@@ -830,7 +733,7 @@ function PromoGiftCards() {
               key={i}
               className="relative bg-white rounded-3xl overflow-hidden border border-gray-200 shadow-sm flex flex-col sm:flex-row items-center p-6 gap-6"
             >
-              <div className="w-full sm:w-1/2 h-44 rounded-2xl overflow-hidden">
+              <div className="relative w-full sm:w-1/2 h-44 rounded-2xl overflow-hidden">
                 <Image
                   src={banner.imgSrc}
                   alt={banner.title}
@@ -880,7 +783,7 @@ function AboutAndSeoSection() {
 
         <div className="mt-12 bg-gradient-to-r from-[#fff1f2] to-[#fce7ed] border border-[#fce7ed] rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex items-center gap-4">
-            <div className="w-32 h-44 rounded-2xl overflow-hidden shadow-md">
+            <div className="relative w-32 h-44 rounded-2xl overflow-hidden shadow-md">
               <Image
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4uLWkqekb8Uw2zoK5uDXKn7bH_zd1YCz5i6tY4M8XhCIiFnkrm-7ptUdZ9ezKBEvJysjRs-959gmkO7qGszFu8gwSdi2VgvjevYd5XoHVFfmP2Esgo7MzGsd7T9CX_Q9uBkcYVXSCH0NU3D7aPb8XSsfCQBj5J17w7DInKly02SrqaBi_c-EfXvkWcXK8K3hs0AaP8k-e-wKax071IcZLIlr5dMijWUWLfLUr_Q"
                 alt="اپلیکیشن سفرینو"
@@ -1115,7 +1018,11 @@ export default function HotelBookingClient() {
     >
       <TopNotificationBar />
       <MainHeader />
-      <HeroSearchSection />
+      <SearchBox
+        initialDestination="تهران، هتل اسپیناس پالاس"
+        initialDateRange="۲۵ فروردین ۱۴۰۵ - ۲۹ فروردین ۱۴۰۵"
+        initialPassengers="۲ بزرگسال، ۱ کودک"
+      />
       <ValuePropositions />
       <HotelsSection title="برترین هتل های ایران" variant="best" />
       <HotelsSection title="هتل های با تخفیف اولین رزرو" variant="firstDiscount" />

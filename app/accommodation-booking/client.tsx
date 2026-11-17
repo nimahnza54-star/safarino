@@ -1,8 +1,12 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/AppImage";
 import { Vazirmatn } from "next/font/google";
+import MainHeader from "@/components/MainHeader";
+import { SearchBox } from "@/components/SearchBox";
 import { useState, useEffect, useCallback, useRef } from "react";
+
+
 
 const vazirmatn = Vazirmatn({
   subsets: ["latin"],
@@ -74,10 +78,10 @@ function AccomCard({
       <div className="p-4">
         <div className="flex items-center justify-between text-xs mb-1">
           <div className="flex items-center text-amber-400 text-[10px] gap-0.5">
-            {[1, 2, 3, 4, 5].map(() => (
-              <i key="star" className="fa-solid fa-star"></i>
-            ))}
-          </div>
+  {[1, 2, 3, 4, 5].map((star) => (
+    <i key={star} className="fa-solid fa-star"></i>
+  ))}
+</div>
           {availableText ? (
             <span className="text-red-600 font-bold text-[11px]">{availableText}</span>
           ) : (
@@ -111,14 +115,14 @@ function FeatureCardAcom({ imgSrc, alt, title, description }: FeatureCardAcomPro
   return (
     <div className="border border-gray-200 rounded-2xl p-5 text-center flex flex-col justify-between hover:shadow-lg transition-all bg-white group">
       <div>
-        <div className="w-full h-44 rounded-xl overflow-hidden mb-4 bg-gray-100">
+        <div className="relative w-full h-44 rounded-xl overflow-hidden mb-4 bg-gray-100">
           <Image
             src={imgSrc}
             alt={alt}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform"
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          />
+            />
         </div>
         <h3 className="font-bold text-slate-800 text-sm mb-2">{title}</h3>
         <p className="text-xs text-gray-500 leading-relaxed text-justify">
@@ -262,7 +266,7 @@ function TravelCard({
           {buttonText}
         </a>
       </div>
-      <div className={`w-48 sm:w-56 h-32 rounded-2xl overflow-hidden shadow-lg transform rotate-${rotate}`}>
+      <div className={`relative w-48 sm:w-56 h-32 rounded-2xl overflow-hidden shadow-lg transform rotate-${rotate}`}>
         <Image
           src={imgSrc}
           alt={imgAlt}
@@ -280,9 +284,9 @@ function TravelCard({
 /* ------------------------------------------------------------------ */
 
 function TopNotificationBanner() {
-  const [visible, setVisible] = useState(true);
+  const [showNotice, setShowNotice] = useState(true);
 
-  if (!visible) return null;
+  if (!showNotice) return null;
 
   return (
     <div className="bg-amber-100 text-amber-900 border-b border-amber-200 text-xs py-2 px-4 flex items-center justify-between text-center relative z-50">
@@ -292,10 +296,12 @@ function TopNotificationBanner() {
           اطلاعیه مهم: پروازها و اسکان مناطق تحت نظارت با تخفیف ویژه نوروز ۱۴۰۵ ارائه می&zwnj;شود. برای اطلاعات بیشتر با پشتیبانی در تماس باشید.
         </span>
       </div>
+
       <button
-        onClick={() => setVisible(false)}
+        onClick={() => setShowNotice(false)}
         className="text-amber-700 hover:text-amber-950 px-2 font-bold text-sm"
         type="button"
+        aria-label="بستن اطلاعیه"
       >
         ✕
       </button>
@@ -303,76 +309,6 @@ function TopNotificationBanner() {
   );
 }
 
-function MainHeader() {
-  const [moreOpen, setMoreOpen] = useState(false);
-
-  return (
-    <header className="bg-white border-b border-gray-100 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Right Side: Brand Logo & Main Nav */}
-          <div className="flex items-center gap-8">
-            <a href="#" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#d0124f] to-[#f472b6] flex items-center justify-center text-white shadow-md shadow-pink-200 group-hover:scale-105 transition-transform">
-                <i className="fa-solid fa-paper-plane text-xl transform -rotate-12"></i>
-              </div>
-              <div>
-                <span className="text-2xl font-black text-[#d0124f] tracking-tight">
-                  سفرینو
-                </span>
-                <span className="block text-[10px] text-gray-400 font-normal -mt-1 tracking-wider">
-                  سفری به دنیای نو
-                </span>
-              </div>
-            </a>
-            <nav className="hidden lg:flex items-center gap-6 text-sm font-semibold">
-              <a href="#" className="text-gray-500 hover:text-[#d0124f] transition-colors">
-                رزرو هتل
-              </a>
-              <a href="#" className="text-[#d0124f] border-b-2 border-[#e21b5b] pb-1 font-bold">
-                ویلا و اقامتگاه
-              </a>
-              <div className="relative group">
-                <button
-                  onClick={() => setMoreOpen((prev) => !prev)}
-                  className="flex items-center gap-1 text-gray-500 hover:text-[#d0124f] transition-colors py-2"
-                >
-                  <span>بیشتر</span>
-                  <i className={`fa-solid fa-chevron-down text-[10px] ${moreOpen ? "rotate-180" : ""}`}></i>
-                </button>
-              </div>
-              <a href="#" className="text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5 text-xs font-bold">
-                <i className="fa-solid fa-house-chimney text-emerald-600"></i>
-                <span>میزبان شوید</span>
-              </a>
-            </nav>
-          </div>
-          {/* Left Side: User Actions & Support */}
-          <div className="flex items-center gap-4 text-xs font-semibold">
-            <a
-              href="#"
-              className="hidden md:flex items-center gap-2 text-gray-600 hover:text-[#d0124f] transition-colors px-3 py-2 rounded-lg hover:bg-gray-50"
-            >
-              <i className="fa-solid fa-headset text-base text-[#e21b5b]"></i>
-              <span>مرکز پشتیبانی آنلاین</span>
-            </a>
-            <a
-              href="#"
-              className="hidden sm:flex items-center gap-2 text-gray-600 hover:text-[#d0124f] transition-colors px-3 py-2 rounded-lg hover:bg-gray-50"
-            >
-              <i className="fa-solid fa-suitcase-rolling text-base text-gray-400"></i>
-              <span>سفرهای من</span>
-            </a>
-            <button className="flex items-center gap-2 bg-white border border-gray-300 text-gray-700 hover:border-[#e21b5b] hover:text-[#d0124f] px-4 py-2.5 rounded-xl transition-all shadow-sm">
-              <i className="fa-regular fa-user text-sm"></i>
-              <span>ورود یا ثبت نام</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
-}
 
 function HeroSearchSection() {
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -1099,7 +1035,7 @@ function MobileAppBanner() {
               </div>
             </div>
           </div>
-          <div className="w-60 h-44 rounded-2xl overflow-hidden shadow-xl border-2 border-white">
+          <div className="relative w-60 h-44 rounded-2xl overflow-hidden shadow-xl border-2 border-white">
             <Image
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPEguL3Mhc__npHZB8y2ZJrg-zQ_2X8Hb6GbY1u_14mIB3gB8rvwwg80L_UCDFKjlYHgGS07vO3OBDFmE4uIydjJIGRayF972QeH_3--wb1E1x7_wpu8tLe37CSh1fY8P361ZM6at6gUXOhUYqMQeg63p5Mh-LrMRSyXLrEMYutRG8O90ibP31MEo8knIWKkVv81GcS2K5O0nwSv-Js1Wovo92ysTjD9pQCIlt5w"
               alt="اپلیکیشن سفرینو"
@@ -1206,14 +1142,14 @@ function TravelBlogSection() {
               className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
             >
               <div>
-                <div className="aspect-[16/10] overflow-hidden">
+                <div className="relative aspect-[16/10] overflow-hidden">
                   <Image
                     src={b.imgSrc}
                     alt={b.alt}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  />
+                            />
                 </div>
                 <div className="p-4">
                   <span className="text-[10px] font-bold text-[#e21b5b] bg-rose-50 px-2 py-0.5 rounded">
@@ -1330,8 +1266,12 @@ export default function AccommodationBookingClient() {
       className={`${vazirmatn.className} min-h-full bg-gray-50 text-slate-700 antialiased selection:bg-[#e21b5b] selection:text-white`}
     >
       <TopNotificationBanner />
-      <MainHeader />
-      <HeroSearchSection />
+      <MainHeader activeSection="accommodation" />
+      <SearchBox
+        initialDestination="رامسر، مازندران"
+        initialDateRange="۲۵ فروردین ۱۴۰۵ - ۲۹ فروردین ۱۴۰۵"
+        initialPassengers="۲ بزرگسال، ۱ کودک"
+      />
       <ValuePropositionBanner />
       <ListingSection1 />
       <ListingSection2 />
