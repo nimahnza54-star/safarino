@@ -10,8 +10,9 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
+        // Only used when a real app-download QR target is configured in mock data.
         protocol: "https",
-        hostname: "lh3.googleusercontent.com",
+        hostname: "api.qrserver.com",
       },
     ],
   },

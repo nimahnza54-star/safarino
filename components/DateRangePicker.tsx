@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect, useMemo } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo, useSyncExternalStore } from "react";
 import {
   getCurrentJalaliDate,
   getJalaliDaysInMonth,
@@ -8,53 +8,70 @@ import {
   getJalaliMonthStartWeekday,
   getJalaliWeekdays,
   jalaliToGregorian,
-  calcNights,
   formatDateRangeSummary,
   toPersianNumerals,
+  type JalaliDate,
 } from "@/components/jalali-utils";
+
+const subscribeMounted = () => () => {};
+/**
+ * `new Date()` is not allowed during Next.js prerender, so the current
+ * Jalali date is resolved exclusively on the client via useSyncExternalStore
+ * (server snapshot: null → placeholder UI, then hydration swaps it in).
+ * The snapshot is cached — getSnapshot must return the same reference
+ * between store notifications or React re-renders infinitely.
+ */
+let cachedToday: JalaliDate | null = null;
+function getClientToday(): JalaliDate {
+  if (cachedToday === null) cachedToday = getCurrentJalaliDate();
+  return cachedToday;
+}
+function useClientJalaliToday(): JalaliDate | null {
+  return useSyncExternalStore(subscribeMounted, getClientToday, () => null);
+}
 
 type DateRangePickerProps = {
   value: string;
   onChange: (value: string) => void;
-  placeholder?: string;
+  /** Reports the structured selection; used by the hotel search. */
+  onRangeChange?: (
+    checkIn: JalaliDate | null,
+    checkOut: JalaliDate | null
+  ) => void;
 };
-
-type JalaliDate = { jy: number; jm: number; jd: number };
 
 export function DateRangePicker({
   value,
   onChange,
-  placeholder = "تاریخ ورود و خروج",
+  onRangeChange,
 }: DateRangePickerProps) {
   const [open, setOpen] = useState(false);
   const [checkIn, setCheckIn] = useState<JalaliDate | null>(null);
   const [checkOut, setCheckOut] = useState<JalaliDate | null>(null);
-  const [viewYear, setViewYear] = useState<number>(0);
-  const [viewMonth, setViewMonth] = useState<number>(0);
+  const [view, setView] = useState<{ jy: number; jm: number } | null>(null);
   const [hoveredDate, setHoveredDate] = useState<JalaliDate | null>(null);
-  const [now, setNow] = useState<JalaliDate | null>(null);
+  const now = useClientJalaliToday();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // Defer current date to client-side to avoid Next.js prerender restriction on new Date()
-  useEffect(() => {
-    setNow(getCurrentJalaliDate());
-  }, []);
+  // Effective calendar view: explicit navigation wins, then the selection, then today.
+  const viewYear = view?.jy ?? (checkIn ?? checkOut ?? now)?.jy ?? 0;
+  const viewMonth = view?.jm ?? (checkIn ?? checkOut ?? now)?.jm ?? 0;
+  const showView = useCallback(
+    (jy: number, jm: number) => setView({ jy, jm }),
+    []
+  );
 
+  // Report structured dates to the parent whenever the selection changes.
   useEffect(() => {
-    if (now && !checkIn && !checkOut) {
-      setViewYear(now.jy);
-      setViewMonth(now.jm);
-    }
-  }, [now, checkIn, checkOut]);
+    onRangeChange?.(checkIn, checkOut);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkIn, checkOut]);
 
   const openCalendar = useCallback(() => {
-    setOpen(true);
     const selected = checkIn || checkOut || now;
-    if (selected) {
-      setViewYear(selected.jy);
-      setViewMonth(selected.jm);
-    }
-  }, [checkIn, checkOut, now]);
+    if (selected) showView(selected.jy, selected.jm);
+    setOpen(true);
+  }, [checkIn, checkOut, now, showView]);
 
   const closeCalendar = useCallback(() => setOpen(false), []);
 
@@ -63,8 +80,7 @@ export function DateRangePicker({
       if (!checkIn) {
         setCheckIn(date);
         setCheckOut(null);
-        setViewYear(date.jy);
-        setViewMonth(date.jm);
+        showView(date.jy, date.jm);
       } else if (!checkOut) {
         const gi = jalaliToGregorian(checkIn.jy, checkIn.jm, checkIn.jd);
         const gd = jalaliToGregorian(date.jy, date.jm, date.jd);
@@ -79,25 +95,20 @@ export function DateRangePicker({
         } else {
           setCheckIn(date);
           setCheckOut(null);
-          setViewYear(date.jy);
-          setViewMonth(date.jm);
+          showView(date.jy, date.jm);
         }
       } else {
         setCheckIn(date);
         setCheckOut(null);
-        setViewYear(date.jy);
-        setViewMonth(date.jm);
+        showView(date.jy, date.jm);
       }
     },
-    [checkIn, checkOut, onChange, closeCalendar]
+    [checkIn, checkOut, onChange, closeCalendar, showView]
   );
 
   const goToToday = useCallback(() => {
-    if (now) {
-      setViewYear(now.jy);
-      setViewMonth(now.jm);
-    }
-  }, [now]);
+    if (now) showView(now.jy, now.jm);
+  }, [now, showView]);
 
   const confirmDates = useCallback(() => {
     if (checkIn && checkOut) {
@@ -108,25 +119,28 @@ export function DateRangePicker({
   }, [checkIn, checkOut, onChange, closeCalendar]);
 
   // Navigation
-  const prevMonth = useCallback(() => {
-    setViewMonth((m) => {
-      if (m === 1) {
-        setViewYear((y) => y - 1);
-        return 12;
-      }
-      return m - 1;
-    });
-  }, []);
+  const shiftMonth = useCallback(
+    (delta: number) => {
+      setView((current) => {
+        const base = current ?? (now ? { jy: now.jy, jm: now.jm } : null);
+        if (!base) return current;
+        let jy = base.jy;
+        let jm = base.jm + delta;
+        if (jm > 12) {
+          jm = 1;
+          jy += 1;
+        } else if (jm < 1) {
+          jm = 12;
+          jy -= 1;
+        }
+        return { jy, jm };
+      });
+    },
+    [now]
+  );
 
-  const nextMonth = useCallback(() => {
-    setViewMonth((m) => {
-      if (m === 12) {
-        setViewYear((y) => y + 1);
-        return 1;
-      }
-      return m + 1;
-    });
-  }, []);
+  const prevMonth = useCallback(() => shiftMonth(-1), [shiftMonth]);
+  const nextMonth = useCallback(() => shiftMonth(1), [shiftMonth]);
 
   // Build two months side by side
   const monthDays = useMemo(() => {
@@ -138,7 +152,7 @@ export function DateRangePicker({
       const days: (JalaliDate | null)[] = [];
       for (let i = 0; i < startWeekday; i++) days.push(null);
       for (let d = 1; d <= daysInMonth; d++) days.push({ jy: y, jm: m, jd: d });
-      return { days, name: getJalaliMonthName(m), year: y, month: m };
+      return { days, name: getJalaliMonthName(m), sortKey: `${y}-${m}` };
     };
 
     let y2 = viewYear;
@@ -194,16 +208,6 @@ export function DateRangePicker({
       );
     },
     [now]
-  );
-
-  const isCheckOutDisabled = useCallback(
-    (date: JalaliDate) => {
-      if (!checkIn) return false;
-      const gi = jalaliToGregorian(checkIn.jy, checkIn.jm, checkIn.jd);
-      const gd = jalaliToGregorian(date.jy, date.jm, date.jd);
-      return new Date(gd.gy, gd.gm - 1, gd.gd).getTime() <= new Date(gi.gy, gi.gm - 1, gi.gd).getTime();
-    },
-    [checkIn]
   );
 
   const weekdays = getJalaliWeekdays();
@@ -331,8 +335,8 @@ export function DateRangePicker({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mt-2">
-            {monthDays.map(({ days, name, year, month }, idx) => (
-              <div key={idx} className="flex flex-col gap-1">
+            {monthDays.map(({ days, name, sortKey }) => (
+              <div key={sortKey} className="flex flex-col gap-1">
                 <div className="font-bold text-xs text-gray-800 mb-1 text-center">
                   {name}
                 </div>
@@ -343,7 +347,7 @@ export function DateRangePicker({
                 </div>
                 <div className="grid grid-cols-7 gap-0.5 text-[11px] font-medium text-gray-700">
                   {[...Array(days.filter((d) => d === null).length)].map((_, i) => (
-                    <span key={`empty-${idx}-${i}`} />
+                    <span key={`empty-${sortKey}-${i}`} />
                   ))}
                   {days
                     .filter((d) => d !== null)
@@ -365,7 +369,7 @@ export function DateRangePicker({
                         checkOut.jd === d.jd;
                       return (
                         <span
-                          key={`day-${idx}-${d.jd}`}
+                          key={`day-${sortKey}-${d.jd}`}
                           onClick={() => selectDate(d)}
                           onMouseEnter={() => setHoveredDate(d)}
                           onMouseLeave={() => setHoveredDate(null)}

@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { InfoModal } from "@/components/hotel-booking/InfoModal";
 
 type ActiveSection = "hotel" | "accommodation";
 
@@ -15,7 +16,13 @@ export default function MainHeader({
   activeSection = "hotel",
 }: MainHeaderProps) {
   const [moreOpen, setMoreOpen] = useState(false);
+  const [activeModalId, setActiveModalId] = useState<string | null>(null);
   const moreRef = useRef<HTMLDivElement>(null);
+
+  const openModal = (modalId: string) => {
+    setActiveModalId(modalId);
+    setMoreOpen(false);
+  };
 
   const isHotel = activeSection === "hotel";
   const isAccommodation = activeSection === "accommodation";
@@ -51,6 +58,7 @@ export default function MainHeader({
   }, []);
 
   return (
+    <>
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
@@ -155,7 +163,7 @@ export default function MainHeader({
 
                     <button
                       type="button"
-                      onClick={() => setMoreOpen(false)}
+                      onClick={() => openModal("travel-insurance")}
                       className="block w-full px-4 py-3 text-right text-sm text-gray-700 transition-colors duration-200 hover:bg-gray-50 hover:text-[#e21b5b]"
                     >
                       بیمه مسافرتی
@@ -163,7 +171,7 @@ export default function MainHeader({
 
                     <button
                       type="button"
-                      onClick={() => setMoreOpen(false)}
+                      onClick={() => openModal("careers")}
                       className="block w-full px-4 py-3 text-right text-sm text-gray-700 transition-colors duration-200 hover:bg-gray-50 hover:text-[#e21b5b]"
                     >
                       استخدام سفرینو
@@ -171,7 +179,7 @@ export default function MainHeader({
 
                     <button
                       type="button"
-                      onClick={() => setMoreOpen(false)}
+                      onClick={() => openModal("about-us")}
                       className="block w-full px-4 py-3 text-right text-sm text-gray-700 transition-colors duration-200 hover:bg-gray-50 hover:text-[#e21b5b]"
                     >
                       درباره ما
@@ -181,12 +189,12 @@ export default function MainHeader({
                 </div>
               </div>
 
-              <a
-                href="#"
+              <Link
+                href="/accommodation-booking"
                 className="text-gray-700 transition-colors duration-200 hover:text-[#e21b5b]"
               >
                 میزبان شوید
-              </a>
+              </Link>
 
             </nav>
           </div>
@@ -195,7 +203,7 @@ export default function MainHeader({
           <div className="flex items-center space-x-4 space-x-reverse text-sm">
 
             <a
-              href="#"
+              href="tel:02188880000"
               className="hidden items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-gray-600 transition-all hover:border-[#fad1dd] hover:text-[#e21b5b] sm:flex"
             >
               <i className="fa-solid fa-headset text-[#e21b5b]"></i>
@@ -205,8 +213,9 @@ export default function MainHeader({
               </span>
             </a>
 
-            <a
-              href="#"
+            <button
+              type="button"
+              onClick={() => openModal("my-trips")}
               className="hidden items-center gap-2 px-2 py-2 text-gray-600 transition-colors hover:text-gray-900 md:flex"
             >
               <i className="fa-solid fa-suitcase-rolling text-gray-400"></i>
@@ -214,11 +223,12 @@ export default function MainHeader({
               <span className="text-xs font-medium">
                 سفرهای من
               </span>
-            </a>
+            </button>
 
             <div className="relative">
               <button
                 type="button"
+                onClick={() => openModal("account-login")}
                 className="flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2 text-xs font-semibold text-gray-700 shadow-sm transition hover:border-[#e21b5b]"
               >
                 <i className="fa-regular fa-user text-sm"></i>
@@ -229,6 +239,7 @@ export default function MainHeader({
 
             <button
               type="button"
+              onClick={() => openModal("settings")}
               className="p-2 text-gray-400 transition-colors hover:text-gray-600"
               title="تنظیمات"
               aria-label="تنظیمات"
@@ -240,5 +251,7 @@ export default function MainHeader({
         </div>
       </div>
     </header>
+    <InfoModal modalId={activeModalId} onClose={() => setActiveModalId(null)} />
+    </>
   );
 }

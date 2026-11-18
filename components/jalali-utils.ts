@@ -95,10 +95,9 @@ export function getJalaliDaysInMonth(jy: number, jm: number): number {
  * Algorithm adapted from jalaali-js (MIT)
  */
 export function gregorianToJalali(gy: number, gm: number, gd: number) {
-  const gDaysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   const jDaysInMonth = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
 
-  let gYear = gy - (gm > 2 ? 1 : 0);
+  const gYear = gy - (gm > 2 ? 1 : 0);
   const leap =
     (gYear % 4 === 0 && gYear % 100 !== 0) || gYear % 400 === 0;
   const gdoy =
@@ -155,15 +154,8 @@ export function gregorianToJalali(gy: number, gm: number, gd: number) {
  */
 export function jalaliToGregorian(jy: number, jm: number, jd: number) {
   const gDaysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  const jDaysInMonth = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
-
-  const breaks = [
-    -61, 9, 38, 199, 426, 686, 756, 818, 1181, 1210, 1635, 2060, 2097, 2192, 2262,
-    2324, 2394, 2456, 3178,
-  ];
 
   const cycleStart = 979;
-  const cycleLength = 12053;
 
   const jyRem = jy - cycleStart;
   const jn = Math.floor(jyRem / 33);
@@ -225,9 +217,14 @@ export function jalaliToGregorian(jy: number, jm: number, jd: number) {
 }
 
 /**
+ * Jalali calendar date (Persian calendar).
+ */
+export type JalaliDate = { jy: number; jm: number; jd: number };
+
+/**
  * Get the current Jalali date based on the actual system date
  */
-export function getCurrentJalaliDate() {
+export function getCurrentJalaliDate(): JalaliDate {
   const now = new Date();
   return gregorianToJalali(now.getFullYear(), now.getMonth() + 1, now.getDate());
 }

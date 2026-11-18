@@ -1,70 +1,10 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { toEnglishNumerals } from "@/components/jalali-utils";
+import { DESTINATIONS } from "@/mock/destinations/destinations.mock";
+import type { DestinationOption } from "@/types/hotel";
 
-export type DestinationOption = {
-  id: string;
-  name: string;
-  city: string;
-  type: "hotel" | "accommodation" | "villa";
-};
-
-/**
- * Sample dataset of hotels and accommodations across Iranian cities.
- * This is local mock data - no backend connection.
- */
-const DESTINATIONS: DestinationOption[] = [
-  // Tehran
-  { id: "1", name: "هتل اسپیناس پالاس", city: "تهران", type: "hotel" },
-  { id: "2", name: "هتل อูتلی تهران", city: "تهران", type: "hotel" },
-  { id: "3", name: "هتل edustو تهران", city: "تهران", type: "hotel" },
-  { id: "4", name: "هتل 플و 체ران", city: "تهران", type: "hotel" },
-  { id: "5", name: "م granting تهران", city: "تهران", type: "accommodation" },
-  // Mazandaran
-  { id: "6", name: "هتل میларام", city: "مازندران، نوشهر", type: "hotel" },
-  { id: "7", name: "ویلا جنگلی چلیک", city: "مازندران، نوشهر", type: "villa" },
-  { id: "8", name: "اقامتگاه بوم‌گردی کلاردشت", city: "مازندران، کلاردشت", type: "accommodation" },
-  { id: "9", name: "هتل سایادال", city: "مازندران، بابل", type: "hotel" },
-  // Isfahan
-  { id: "10", name: "هتل سی además", city: "اصفهان", type: "hotel" },
-  { id: "11", name: "اقامتگاه سنتی جلفا", city: "اصفهان، جلفا", type: "accommodation" },
-  { id: "12", name: "ویلاсториک کاشان", city: "کاشان", type: "villa" },
-  // Mashhad
-  { id: "13", name: "هتل علىನೆ مشهد", city: "مشهد", type: "hotel" },
-  { id: "14", name: "اقامتگاه طرقبه مشهد", city: "مشهد، طرقبه", type: "accommodation" },
-  // Shiraz
-  { id: "15", name: "هتل وارنت شیراز", city: "شیراز", type: "hotel" },
-  { id: "16", name: "باغ Amelia شیراز", city: "شیراز", type: "villa" },
-  { id: "17", name: "اقامتگاه سنتی قلات", city: "شیراز، قلات", type: "accommodation" },
-  // Yazd
-  { id: "18", name: "هتل سادات یزد", city: "یزد", type: "hotel" },
-  { id: "19", name: "اقامتگاه بوم‌گردی بافت تاریخی", city: "یزد، بافت تاریخی", type: "accommodation" },
-  // Kish
-  { id: "20", name: "هتل مارین 키ش", city: "جزیره کیش", type: "hotel" },
-  { id: "21", name: "ویلا ساحلی صدف", city: "جزیره کیش، مرجان", type: "villa" },
-  // Qeshm
-  { id: "22", name: "هتل قشم", city: "جزیره قشم", type: "hotel" },
-  // Ramsar
-  { id: "23", name: "پنتهاوس ساحلی یاس", city: "رامسر، بلوار کازینو", type: "villa" },
-  // Chalous
-  { id: "24", name: "ویلا موج استخردار", city: "چالوس، رادیو دریا", type: "villa" },
-  // Gilan
-  { id: "25", name: "کلبه روستایی شالیزار", city: "گیلان، فومن", type: "villa" },
-  // Alborz
-  { id: "26", name: "ویلا استخر روباز", city: "البرز، سهیلیه", type: "villa" },
-  // Additional diverse options
-  { id: "27", name: "هتلellor، تهران", city: "تهران", type: "hotel" },
-  { id: "28", name: "هتل.module، مشهد", city: "مشهد", type: "hotel" },
-  { id: "29", name: "اقامتگاه بوم‌گردی 들", city: "مازندران، Ramsar", type: "accommodation" },
-  { id: "30", name: "هتل آسمان、شیراز", city: "شیراز", type: "hotel" },
-  { id: "31", name: "ویلا باغ、یزد", city: "یزد", type: "villa" },
-  { id: "32", name: "هتل cilia، کیش", city: "جزیره کیش", type: "hotel" },
-  { id: "33", name: "اقامتگاه بوم‌گردی، همدان", city: "همدان", type: "accommodation" },
-  { id: "34", name: "هتل roni، أردبیل", city: "اردبیل", type: "hotel" },
-  { id: "35", name: "هتل tabriz، تبریز", city: "تبریز", type: "hotel" },
-  { id: "36", name: "هتل zephyr، ارومیه", city: "ارومیه", type: "hotel" },
-];
+export type { DestinationOption };
 
 type DestinationDropdownProps = {
   value: string;

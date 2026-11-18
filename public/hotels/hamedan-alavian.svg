@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#355c7d"/>
+      <stop offset="0.62" stop-color="#6c5b7b"/>
+      <stop offset="1" stop-color="#f8b195"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" fill="url(#sky)"/>
+  <circle cx="48" cy="77" r="1.7" fill="#ffffff" opacity="0.08"/><circle cx="367" cy="57" r="0.7" fill="#ffffff" opacity="0.05"/><circle cx="546" cy="139" r="2.0" fill="#ffffff" opacity="0.61"/><circle cx="414" cy="62" r="1.9" fill="#ffffff" opacity="0.45"/><circle cx="471" cy="26" r="1.9" fill="#ffffff" opacity="0.07"/><circle cx="376" cy="186" r="0.9" fill="#ffffff" opacity="0.38"/><circle cx="597" cy="133" r="1.1" fill="#ffffff" opacity="0.53"/><circle cx="478" cy="78" r="0.7" fill="#ffffff" opacity="0.37"/><circle cx="593" cy="211" r="2.2" fill="#ffffff" opacity="0.86"/><circle cx="654" cy="89" r="1.7" fill="#ffffff" opacity="0.07"/><circle cx="417" cy="224" r="1.2" fill="#ffffff" opacity="0.26"/><circle cx="71" cy="152" r="1.1" fill="#ffffff" opacity="0.65"/><circle cx="760" cy="169" r="1.9" fill="#ffffff" opacity="0.86"/><circle cx="496" cy="195" r="1.2" fill="#ffffff" opacity="0.01"/>
+  <polygon points="0,465 0,324 100,326 200,423 300,329 400,365 500,353 600,391 700,377 800,355 800,465 800,520 0,520" fill="#355c7d" opacity="0.8"/><polygon points="0,410 0,281 100,327 200,290 300,277 400,300 500,373 600,308 700,351 800,269 800,410 800,520 0,520" fill="#6c5b7b" opacity="0.9500000000000001"/><rect x="330" y="285" width="46" height="180" rx="8" fill="#f67280" opacity="0.55"/><circle cx="353" cy="275" r="26" fill="#f67280" opacity="0.55"/>
+  <rect x="0" y="496" width="800" height="24" fill="#000" opacity="0.35"/>
+</svg>
