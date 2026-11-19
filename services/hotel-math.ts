@@ -1,4 +1,3 @@
-import type { Hotel } from "../types/hotel";
 import type { SearchCriteria } from "../types/search";
 
 /**
@@ -18,8 +17,15 @@ export function normalizeFa(text: string): string {
     .trim();
 }
 
-/** Destination match: hotel name, location or city label vs. free-text query. */
-export function matchesDestination(hotel: Hotel, rawQuery: string): boolean {
+/** Minimal shape required for destination matching (Hotel and Accommodation both satisfy it). */
+export interface DestinationMatchable {
+  name: string;
+  location: string;
+  cityLabel: string;
+}
+
+/** Destination match: name, location or city label vs. free-text query. */
+export function matchesDestination(item: DestinationMatchable, rawQuery: string): boolean {
   const query = normalizeFa(rawQuery);
   if (!query) return true;
 
@@ -28,9 +34,9 @@ export function matchesDestination(hotel: Hotel, rawQuery: string): boolean {
     .map((t) => t.trim())
     .filter(Boolean);
   const haystacks = [
-    normalizeFa(hotel.name),
-    normalizeFa(hotel.location),
-    normalizeFa(hotel.cityLabel),
+    normalizeFa(item.name),
+    normalizeFa(item.location),
+    normalizeFa(item.cityLabel),
   ];
 
   return tokens.some(
@@ -41,10 +47,13 @@ export function matchesDestination(hotel: Hotel, rawQuery: string): boolean {
 }
 
 /** Capacity check: rooms × per-room capacity must fit the party. */
-export function fitsCapacity(hotel: Hotel, criteria: SearchCriteria): boolean {
+export function fitsCapacity(
+  item: { maxGuests: number },
+  criteria: Pick<SearchCriteria, "adults" | "children" | "rooms">
+): boolean {
   const guests = criteria.adults + criteria.children;
   const rooms = Math.max(1, criteria.rooms);
-  return hotel.maxGuests * rooms >= guests;
+  return item.maxGuests * rooms >= guests;
 }
 
 /** Final nightly price after a percentage discount (rounded to toman). */

@@ -8,6 +8,7 @@ import { FavoritesProvider } from "@/hooks/useFavorites";
 import { searchHotels } from "@/services/hotels.service";
 import { SearchResultsSection } from "@/components/hotel-booking/SearchResultsSection";
 import { PlatformFeatures } from "@/components/hotel-booking/PlatformFeatures";
+import { Benefits } from "@/components/hotel-booking/Benefits";
 import { CityHotelsSection } from "@/components/hotel-booking/CityHotelsSection";
 import { BestHotelsSection } from "@/components/hotel-booking/BestHotelsSection";
 import { CampaignHotelSection } from "@/components/hotel-booking/CampaignHotelSection";
@@ -125,6 +126,7 @@ export default function HotelBookingClient() {
 
         {/* Platform features + city-based hotel browser */}
         <PlatformFeatures />
+        <Benefits />
         <section className="bg-white pb-10" aria-label="هتل‌ها بر اساس شهر">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <CityHotelsSection />

@@ -5,7 +5,10 @@
  */
 export * from "./hotels/hotels.mock";
 export * from "./hotels/hotel-categories.mock";
+export * from "./accommodations/accommodations.mock";
+export * from "./accommodations/accommodation-categories.mock";
 export * from "./campaigns/campaigns.mock";
+export * from "./campaigns/accommodation-campaigns.mock";
 export * from "./destinations/destinations.mock";
 export * from "./content/platform-features.mock";
 export * from "./content/travel-card.mock";
@@ -14,3 +17,4 @@ export * from "./content/footer.mock";
 export * from "./content/faqs.mock";
 export * from "./content/blog-posts.mock";
 export * from "./content/site-content.mock";
+export * from "./content/accommodation-content.mock";

@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated CommonJS output used by the node test runner:
+    ".test-build/**",
   ]),
 ]);
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "@/components/AppImage";
 import { useFavorites } from "@/hooks/useFavorites";
 import { formatCount, formatPercent, formatRating, formatToman } from "@/components/format-utils";
+import { FavoriteButton } from "./FavoriteButton";
 import { HotelDetailModal } from "./HotelDetailModal";
 import type { Hotel } from "@/types/hotel";
 
@@ -68,25 +69,11 @@ export function HotelCard({
           />
         )}
 
-        <button
-          type="button"
-          onClick={() => toggleFavorite(hotel.id)}
-          aria-pressed={favorite}
-          aria-label={
-            favorite
-              ? `${hotel.name} از علاقه‌مندی‌ها حذف شود`
-              : `${hotel.name} به علاقه‌مندی‌ها افزوده شود`
-          }
-          title={favorite ? "حذف از علاقه‌مندی‌ها" : "افزودن به علاقه‌مندی‌ها"}
-          className="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center transition shadow-sm"
-        >
-          <i
-            className={`${
-              favorite ? "fa-solid text-[#e21b5b]" : "fa-regular text-gray-700"
-            } fa-heart text-sm`}
-            aria-hidden="true"
-          />
-        </button>
+        <FavoriteButton
+          hotelId={hotel.id}
+          hotelName={hotel.name}
+          className="absolute top-3 left-3"
+        />
 
         {isDiscount && discountPercent !== undefined && (
           <div

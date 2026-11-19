@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Heart } from "lucide-react";
 import { getHotels } from "@/services/hotels.service";
 import { HOTEL_CITY_CATEGORIES, type CityCategoryId } from "@/mock/hotels/hotel-categories.mock";
 import { useFavorites } from "@/hooks/useFavorites";
@@ -114,9 +115,12 @@ export function CityHotelsSection() {
               : "bg-white border-gray-200 text-gray-700 hover:border-[#e21b5b] hover:text-[#e21b5b]"
           }`}
         >
-          <i
-            className={`fa-heart ${favoritesOnly ? "fa-solid" : "fa-regular"}`}
+          <Heart
             aria-hidden="true"
+            strokeWidth={2}
+            className={`h-4 w-4 transition-colors ${
+              favoritesOnly ? "fill-white text-white" : "fill-transparent text-gray-700"
+            }`}
           />
           علاقه‌مندی‌های من
           <span

@@ -45,20 +45,28 @@ function FaqItem({ faq, initialOpen = false }: { faq: FaqItemData; initialOpen?:
 }
 
 /** «پرسش‌های متداول درباره رزرو هتل در سفرینو» — accordion. */
-export function FaqSection() {
+export function FaqSection({
+  items = HOTEL_FAQS,
+  title,
+  subtitle,
+  id = "faq",
+}: {
+  items?: FaqItemData[];
+  title?: string;
+  subtitle?: string;
+  id?: string;
+} = {}) {
   return (
-    <section id="faq" className="py-12 bg-gray-50" aria-labelledby="faq-title">
+    <section id={id} className="py-12 bg-gray-50" aria-labelledby="faq-title">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
           <h3 id="faq-title" className="text-xl font-black text-gray-900 mb-2">
-            پرسش‌های متداول درباره رزرو هتل در سفرینو
+            {title ?? "پرسش‌های متداول درباره رزرو هتل در سفرینو"}
           </h3>
-          <p className="text-xs text-gray-500">
-            پاسخ سریع به رایج‌ترین سؤال‌های مسافران و همکاران ما در مرکز تماس
-          </p>
+          <p className="text-xs text-gray-500">{subtitle ?? "پاسخ سریع به رایج‌ترین سؤال‌های مسافران و همکاران ما در مرکز تماس"}</p>
         </div>
         <div className="space-y-3">
-          {HOTEL_FAQS.map((faq) => (
+          {items.map((faq) => (
             <FaqItem key={faq.id} faq={faq} />
           ))}
         </div>

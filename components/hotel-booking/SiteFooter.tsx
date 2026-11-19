@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
+import { Headphones, BadgePercent, BadgeCheck, CreditCard } from "lucide-react";
 import {
   BOTTOM_BAR_LINKS,
   CONTACT_INFO,
@@ -12,6 +13,13 @@ import {
 } from "@/mock/content/footer.mock";
 import { TRUST_BADGES } from "@/mock/content/site-content.mock";
 import { InfoModal } from "./InfoModal";
+
+const TRUST_BADGE_ICONS: Record<string, React.ReactNode> = {
+  "fa-headset": <Headphones aria-hidden="true" strokeWidth={2} className="text-xl" />,
+  "fa-tags": <BadgePercent aria-hidden="true" strokeWidth={2} className="text-xl" />,
+  "fa-bolt-lightning": <BadgeCheck aria-hidden="true" strokeWidth={2} className="text-xl" />,
+  "fa-shield-halved": <CreditCard aria-hidden="true" strokeWidth={2} className="text-xl" />,
+};
 
 /**
  * Footer — fully driven by mock/content/footer.mock.ts.
@@ -57,8 +65,10 @@ export function SiteFooter() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pb-10 border-b border-gray-200 text-center">
           {TRUST_BADGES.map((badge) => (
             <div key={badge.id} className="flex flex-col items-center">
-              <div className="w-12 h-12 rounded-2xl bg-white border border-gray-200 flex items-center justify-center text-[#e21b5b] text-xl mb-3 shadow-sm">
-                <i className={`fa-solid ${badge.icon}`} aria-hidden="true" />
+              <div className="w-12 h-12 rounded-2xl bg-white border border-gray-200 flex items-center justify-center text-[#e21b5b] mb-3 shadow-sm">
+                {TRUST_BADGE_ICONS[badge.icon] ?? (
+                  <i className={`fa-solid ${badge.icon}`} aria-hidden="true" />
+                )}
               </div>
               <h5 className="font-bold text-xs text-gray-900">{badge.title}</h5>
               <p className="text-[11px] text-gray-500 mt-1">{badge.description}</p>

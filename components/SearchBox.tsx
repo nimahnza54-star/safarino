@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Link from "next/link";
 import { calcNights, type JalaliDate } from "@/components/jalali-utils";
 import { DestinationDropdown } from "@/components/DestinationDropdown";
 import { DateRangePicker } from "@/components/DateRangePicker";
@@ -17,10 +18,20 @@ export type SearchBoxProps = {
   initialDestination?: string;
   initialDateRange?: string;
   initialPassengers?: string;
-  /** Called with validated criteria. When omitted, the search button stays disabled (current accommodation-booking state). */
+  /** Called with validated criteria. When omitted, the search button stays disabled. */
   onSearch?: (criteria: SearchCriteria) => void;
   /** Called when the user clears the filters inside this box. */
   onClear?: () => void;
+  /** Which category tab starts active: 0 = هتل (default), 1 = ویلا و اقامتگاه. */
+  initialActiveTab?: number;
+  /** Per-tab links; tabs present here render as navigation instead of a visual-only button. */
+  tabLinks?: Record<number, string>;
+  /** Helper text shown when there is no validation error. */
+  helperText?: string;
+  /** Tooltip/title for the (enabled) search button. */
+  searchTitle?: string;
+  /** Placeholder for the destination field and its dropdown search. */
+  destinationPlaceholder?: string;
 };
 
 const CATEGORY_TABS: CategoryTab[] = [
@@ -44,6 +55,11 @@ export function SearchBox({
   initialPassengers,
   onSearch,
   onClear,
+  initialActiveTab = 0,
+  tabLinks,
+  helperText = "جستجو فقط هتل‌های منطبق با مقصد و ظرفیت را نمایش می‌دهد.",
+  searchTitle = "جستجوی هتل‌های منطبق",
+  destinationPlaceholder,
 }: SearchBoxProps = {}) {
   const defaultDestination = initialDestination ?? "تهران، هتل اسپیناس پالاس";
   const defaultDateRange = initialDateRange ?? "۲۵ فروردین ۱۴۰۵ - ۲۹ فروردین ۱۴۰۵";
@@ -52,7 +68,7 @@ export function SearchBox({
   const [destination, setDestination] = useState(defaultDestination);
   const [dateRange, setDateRange] = useState(defaultDateRange);
   const [passengers, setPassengers] = useState(defaultPassengers);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(initialActiveTab);
   const [checkIn, setCheckIn] = useState<JalaliDate | null>(null);
   const [checkOut, setCheckOut] = useState<JalaliDate | null>(null);
   const [passengerCounts, setPassengerCounts] = useState({
@@ -124,21 +140,39 @@ export function SearchBox({
         <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/60 border border-gray-100 p-4 sm:p-6 lg:p-8">
           {/* Category Tab Bar */}
           <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-4 mb-6 border-b border-gray-100 no-scrollbar">
-            {CATEGORY_TABS.map((tab, i) => (
-              <button
-                key={i}
-                onClick={() => selectTab(i)}
-                aria-pressed={activeTab === i}
-                className={`flex flex-col items-center justify-center min-w-[76px] py-2 px-3 rounded-2xl transition-all border ${
-                  activeTab === i
-                    ? "bg-[#e21b5b]/10 text-[#e21b5b] font-bold border-[#fad1dd]"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-[#e21b5b] font-medium border-transparent"
-                }`}
-              >
-                <i className={`fa-solid ${tab.icon} text-xl mb-1.5`}></i>
-                <span className="text-xs">{tab.label}</span>
-              </button>
-            ))}
+            {CATEGORY_TABS.map((tab, i) => {
+              const tabClass = `flex flex-col items-center justify-center min-w-[76px] py-2 px-3 rounded-2xl transition-all border ${
+                activeTab === i
+                  ? "bg-[#e21b5b]/10 text-[#e21b5b] font-bold border-[#fad1dd]"
+                  : "text-gray-600 hover:bg-gray-50 hover:text-[#e21b5b] font-medium border-transparent"
+              }`;
+              const tabContent = (
+                <>
+                  <i className={`fa-solid ${tab.icon} text-xl mb-1.5`}></i>
+                  <span className="text-xs">{tab.label}</span>
+                </>
+              );
+              const href = tabLinks?.[i];
+              return href ? (
+                <Link
+                  key={i}
+                  href={href}
+                  aria-current={activeTab === i ? "page" : undefined}
+                  className={tabClass}
+                >
+                  {tabContent}
+                </Link>
+              ) : (
+                <button
+                  key={i}
+                  onClick={() => selectTab(i)}
+                  aria-pressed={activeTab === i}
+                  className={tabClass}
+                >
+                  {tabContent}
+                </button>
+              );
+            })}
           </div>
 
           {/* Search Input Bar Fields */}
@@ -148,6 +182,7 @@ export function SearchBox({
               key={`destination-${resetToken}`}
               value={destination}
               onChange={setDestination}
+              placeholder={destinationPlaceholder}
             />
 
             {/* Date Selector Field */}
@@ -175,7 +210,7 @@ export function SearchBox({
                 aria-disabled={!searchEnabled}
                 title={
                   searchEnabled
-                    ? "جستجوی هتل‌های منطبق"
+                    ? searchTitle
                     : "جستجو در نسخه کامل در دسترس قرار می‌گیرد"
                 }
                 className={`w-full h-[54px] bg-[#e21b5b] text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#e21b5b]/30 transition-all transform ${
@@ -198,9 +233,7 @@ export function SearchBox({
                 {error}
               </p>
             ) : (
-              <span className="text-[10px] text-gray-400">
-                جستجو فقط هتل‌های منطبق با مقصد و ظرفیت را نمایش می‌دهد.
-              </span>
+              <span className="text-[10px] text-gray-400">{helperText}</span>
             )}
             {searchEnabled && (
               <button

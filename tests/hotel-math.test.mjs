@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import hotelMath from "../.test-build/hotel-math.js";
+import hotelMath from "../.test-build/services/hotel-math.js";
 
 const {
   normalizeFa,
