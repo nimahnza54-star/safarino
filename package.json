@@ -10,6 +10,7 @@
     "test": "node -e \"require('fs').rmSync('.test-build',{recursive:true,force:true})\" && tsc services/hotel-math.ts services/stay-pricing.ts services/accommodation-booking.service.ts --outDir .test-build --module commonjs --target es2020 --moduleResolution node --skipLibCheck && node --test tests/hotel-math.test.mjs tests/stay-pricing.test.mjs tests/accommodation-booking.test.mjs"
   },
   "dependencies": {
+    "jalaali-js": "^2.0.1",
     "lucide-react": "^1.74.0",
     "next": "16.4.6",
     "react": "19.3.0",

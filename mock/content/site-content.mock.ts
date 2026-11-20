@@ -4,6 +4,9 @@
  */
 
 export const TOP_NOTIFICATION = {
+  /** Stable id used to persist dismissal in localStorage. Bump this to
+   *  re-display a new announcement after users have dismissed the old one. */
+  id: "nowruz-1405-notice",
   message:
     "اطلاعیه مهم: پروازها و اسکان مناطق تحت نظارت با تخفیف ویژه نوروز ۱۴۰۵ ارائه می‌شود. برای اطلاعات بیشتر با پشتیبانی در تماس باشید.",
 } as const;

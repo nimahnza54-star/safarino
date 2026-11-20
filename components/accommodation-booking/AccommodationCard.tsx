@@ -1,12 +1,12 @@
 "use client";
 
 import Image from "@/components/AppImage";
-import { useFavorites } from "@/hooks/useFavorites";
 import { formatCount, formatPercent, formatRating, formatToman } from "@/components/format-utils";
 import { useState } from "react";
 import type { Accommodation } from "@/types/accommodation";
 import { AccommodationDetailModal } from "./AccommodationDetailModal";
 import { BookingModal } from "./BookingModal";
+import { FavoriteButton } from "@/components/hotel-booking/FavoriteButton";
 
 export type AccommodationCardVariant = "best" | "firstBooking" | "loyalty" | "lastMinute";
 
@@ -41,13 +41,11 @@ export function AccommodationCard({
   originalPrice,
   finalPrice,
 }: AccommodationCardProps) {
-  const { isFavorite, toggleFavorite, hydrated } = useFavorites();
   const [imageError, setImageError] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);
 
   const isDiscount = variant !== "best";
-  const favorite = hydrated && isFavorite(accommodation.id);
   const starsFilled = Math.round(accommodation.rating);
 
   const discount: AccommodationDiscountInfo | null =
@@ -81,25 +79,11 @@ export function AccommodationCard({
           />
         )}
 
-        <button
-          type="button"
-          onClick={() => toggleFavorite(accommodation.id)}
-          aria-pressed={favorite}
-          aria-label={
-            favorite
-              ? `${accommodation.name} از علاقه‌مندی‌ها حذف شود`
-              : `${accommodation.name} به علاقه‌مندی‌ها افزوده شود`
-          }
-          title={favorite ? "حذف از علاقه‌مندی‌ها" : "افزودن به علاقه‌مندی‌ها"}
-          className="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center transition shadow-sm"
-        >
-          <i
-            className={`${
-              favorite ? "fa-solid text-[#e21b5b]" : "fa-regular text-gray-700"
-            } fa-heart text-sm`}
-            aria-hidden="true"
-          />
-        </button>
+        <FavoriteButton
+          hotelId={accommodation.id}
+          hotelName={accommodation.name}
+          className="absolute top-3 left-3"
+        />
 
         {discount && (
           <div

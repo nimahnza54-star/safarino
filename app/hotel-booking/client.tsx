@@ -17,7 +17,7 @@ import { SeoArticle } from "@/components/hotel-booking/SeoArticle";
 import { FaqSection } from "@/components/hotel-booking/FaqSection";
 import { BlogSection } from "@/components/hotel-booking/BlogSection";
 import { SiteFooter } from "@/components/hotel-booking/SiteFooter";
-import { TOP_NOTIFICATION } from "@/mock/content/site-content.mock";
+import { TopNotificationBar } from "@/components/TopNotificationBar";
 import type { GridStatus } from "@/components/hotel-booking/HotelGrid";
 import type { Hotel } from "@/types/hotel";
 import type { SearchCriteria } from "@/types/search";
@@ -28,32 +28,6 @@ const vazirmatn = Vazirmatn({
   variable: "--font-vazirmatn",
   display: "swap",
 });
-
-function TopNotificationBar() {
-  const [visible, setVisible] = useState(true);
-
-  if (!visible) return null;
-
-  return (
-    <div
-      className="bg-amber-100 text-amber-900 border-b border-amber-200 text-xs py-2 px-4 flex items-center justify-between text-center relative z-50"
-      role="status"
-    >
-      <div className="max-w-7xl mx-auto flex items-center gap-2 font-medium">
-        <i className="fa-solid fa-bullhorn text-amber-600" aria-hidden="true" />
-        <span>{TOP_NOTIFICATION.message}</span>
-      </div>
-      <button
-        type="button"
-        onClick={() => setVisible(false)}
-        className="text-amber-700 hover:text-amber-950 px-2 font-bold text-sm"
-        aria-label="بستن اطلاعیه"
-      >
-        <i className="fa-solid fa-xmark" aria-hidden="true" />
-      </button>
-    </div>
-  );
-}
 
 type SearchState =
   | { status: "idle" }

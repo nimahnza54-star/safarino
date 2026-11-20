@@ -16,9 +16,9 @@ import { BlogSection } from "@/components/hotel-booking/BlogSection";
 import { SiteFooter } from "@/components/hotel-booking/SiteFooter";
 import { FaqSection } from "@/components/hotel-booking/FaqSection";
 import { Modal } from "@/components/hotel-booking/Modal";
+import { TopNotificationBar } from "@/components/TopNotificationBar";
 import type { GridStatus } from "@/components/accommodation-booking/AccommodationGrid";
 import {
-  TOP_NOTIFICATION,
   APP_DOWNLOAD,
   ACCOMMODATION_VALUE_PROPS,
   ACCOMMODATION_PILLARS,
@@ -39,36 +39,7 @@ const vazirmatn = Vazirmatn({
 });
 
 /* ------------------------------------------------------------------ */
-/* Top notification bar (dismissable)                                   */
-/* ------------------------------------------------------------------ */
-function TopNotificationBar() {
-  const [visible, setVisible] = useState(true);
-
-  if (!visible) return null;
-
-  return (
-    <div
-      className="bg-amber-100 text-amber-900 border-b border-amber-200 text-xs py-2 px-4 flex items-center justify-between text-center relative z-50"
-      role="status"
-    >
-      <div className="max-w-7xl mx-auto flex items-center gap-2 font-medium">
-        <i className="fa-solid fa-bullhorn text-amber-600" aria-hidden="true" />
-        <span>{TOP_NOTIFICATION.message}</span>
-      </div>
-      <button
-        type="button"
-        onClick={() => setVisible(false)}
-        className="text-amber-700 hover:text-amber-950 px-2 font-bold text-sm"
-        aria-label="بستن اطلاعیه"
-      >
-        <i className="fa-solid fa-xmark" aria-hidden="true" />
-      </button>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Value proposition: features + destination chips                      */
+/* Top notification bar (dismissable, shared component)                 */
 /* ------------------------------------------------------------------ */
 function ValuePropositionBanner({
   onSelectCity,
